@@ -12,7 +12,7 @@
     <p> Complex numbers are encoded as tagged arrays with exactly two elements.
         The tag number is 31.
         The first item is the real part and the second the imaginary.
-        Both items can integers (major types 0 and 1), floating-point numbers (major type 7 with additional information 25, 26 or 27), bignums (tags 2 and 3), decimal fractions (tag 3), bigfloats (tag 5) or rationals (tag 30).
+        Both items can integers (major types 0 and 1), floating-point numbers (major type 7 with additional information 25, 26 or 27), bignums (tags 2 and 3), decimal fractions (tag 4), bigfloats (tag 5) or rationals (tag 30).
     <p>In practice a protocol could restrict these types to simplify the decoding process. A generic decoder would still be able to decode the item.
     <p>Complex numbers with imaginary part equal to zero can be encoded as just the real part. Encoders are not required to perform this optimisation.
 <h2>CDDL</h2>
