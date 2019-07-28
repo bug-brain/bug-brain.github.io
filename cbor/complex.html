@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<title>CBOR Complex Numbers</title>
+<h1>Complex Number</h1>
+<p>This document specifies tag 31 for complex numbers in CBOR [<a href="#cbor">1</a>].
+<h2>Registration Information</h2>
+    <table>
+        <tr><td>Tag</td><td>31</td></tr>
+        <tr><td>Data Item</td><td>array</td></tr>
+        <tr><td>Semantics</td><td>complex number</td></tr>
+    </table>
+<h2>Semantics</h2>
+    <p> Complex numbers are encoded as tagged arrays with exactly two elements.
+        The tag number is 31.
+        The first item is the real part and the second the imaginary.
+        Both items can integers (major types 0 and 1), floating-point numbers (major type 7 with additional information 25, 26 or 27), bignums (tags 2 and 3), decimal fractions (tag 3), bigfloats (tag 5) or rationals (tag 30).
+    <p>In practice a protocol could restrict these types to simplify the decoding process. A generic decoder would still be able to decode the item.
+    <p>Complex numbers with imaginary part equal to zero can be encoded as just the real part. Encoders are not required to perform this optimisation.
+<h2>CDDL</h2>
+    <p>The above definition in CDDL [<a href="#cddl">2</a>]:
+    <pre>
+        complex = #6.31([re: real, im: real])
+        real = number / bigint / bigfloat / rational
+        rational = #6.30([num: int / bigint, den: unsigned .ne 0])
+    </pre>
+<h2>Example</h2>
+    <p>The imaginary unit <i>i</i> encoded as tagged array of two unsigned integers:
+    <pre>
+        D8 1F    # tag(31)
+           82    # array(2)
+              00 # unsigned(0)
+              01 # unsigned(1)
+    </pre>
+<h2>References</h2>
+<ol>
+    <li id="cbor">Bormann, C. and Hoffman, P. "Concise Binary Object Representation (CBOR)". <a href="https://tools.ietf.org/html/rfc7049">RFC 7049</a>, October 2013.</li>
+    <li id="cddl">Birkholz, H., Vigano, C. and Bormann, C. "Concise Data Definition Language (CDDL): A Notational Convention to Express Concise Binary Object Representation (CBOR) and JSON Data Structures". <a href="https://tools.ietf.org/html/rfc8610">RFC 8610</a>, June 2019.</li>
+</ol>
+
+
