@@ -1,0 +1,168 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="language" http-equiv="Content-Language" content="en-US">
+<meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Magic: The Gathering Mana Base Suggester">
+<title>Mana Base Suggester</title>
+<script type="module">
+  import { h, Component, Fragment, render } from 'https://unpkg.com/preact?module';
+
+  const colors = {
+    AZORIUS: 'wu',
+    DIMIR: 'ub',
+    RAKDOS: 'br',
+    GRUUL: 'gr',
+    SELESNYA: 'wg',
+    ORZHOV: 'wb',
+    GOLGARI: 'bg',
+    SIMIC: 'ug',
+    IZZET: 'ur',
+    BOROS: 'wr'
+  }
+
+  const lands = {
+    bike: [
+      { colors: colors.AZORIUS, name: "Irrigated Farmland" },
+      { colors: colors.DIMIR, name: "Fetid Pools" },
+      { colors: colors.RAKDOS, name: "Canyon Slough" },
+      { colors: colors.GRUUL, name: "Sheltered Thicket" },
+      { colors: colors.SELESNYA, name: "Scattered Groves" }
+    ],
+    bounce: [],
+    canopy: [],
+    check: [
+      { colors: colors.AZORIUS, name: "Glacial Fortress" },
+      { colors: colors.DIMIR, name: "Drowned Catacombs" },
+      { colors: colors.RAKDOS, name: "Dragonskull Sumit" },
+      { colors: colors.GRUUL, name: "Rootbound Crag" },
+      { colors: colors.SELESNYA, name: "Sunpetal Grove" },
+      { colors: colors.ORZHOV, name: "Isolated Chapel" },
+      { colors: colors.IZZET, name: "Sulfur Falls" },
+      { colors: colors.GOLGARI, name: "Woodland Cemetery" },
+      { colors: colors.BOROS, name: "Clifftop Retreat" },
+      { colors: colors.SIMIC, name: "Hinterland Harbor" }
+    ],
+    dual: [
+      { colors: colors.AZORIUS, name: "Tundra" },
+      { colors: colors.DIMIR, name: "Underground Sea" },
+      { colors: colors.RAKDOS, name: "Badlands" },
+      { colors: colors.GRUUL, name: "Taiga" },
+      { colors: colors.SELESNYA, name: "Savannah" },
+      { colors: colors.ORZHOV, name: "Scrubland" },
+      { colors: colors.IZZET, name: "Volcanic Island" },
+      { colors: colors.GOLGARI, name: "Bayou" },
+      { colors: colors.BOROS, name: "Plateau" },
+      { colors: colors.SIMIC, name: "Tropical Island" }
+    ],
+    fast: [],
+    fetch: [
+      { colors: colors.AZORIUS, name: "Flooded Strand" },
+      { colors: colors.DIMIR, name: "Polluted Delta" },
+      { colors: colors.RAKDOS, name: "Bloodstained Mire" },
+      { colors: colors.GRUUL, name: "Wooded Foothills" },
+      { colors: colors.SELESNYA, name: "Windswept Heath" },
+      { colors: colors.ORZHOV, name: "Marsh Flats" },
+      { colors: colors.IZZET, name: "Scalding Tarn" },
+      { colors: colors.GOLGARI, name: "Verdant Catacombs" },
+      { colors: colors.BOROS, name: "Arid Mesa" },
+      { colors: colors.SIMIC, name: "Misty Rainforest" }
+    ],
+    filter: [],
+    gain: [],
+    pain: [],
+    scry: [],
+    shadow: [],
+    shock: [
+      { colors: colors.AZORIUS, name: "Hallowed Fountain" },
+      { colors: colors.DIMIR, name: "Watery Grave" },
+      { colors: colors.RAKDOS, name: "Blood Crypt" },
+      { colors: colors.GRUUL, name: "Stpmping Grounds" },
+      { colors: colors.SELESNYA, name: "Temple Garden" },
+      { colors: colors.ORZHOV, name: "Godless Shrine" },
+      { colors: colors.IZZET, name: "Steam Vents" },
+      { colors: colors.GOLGARI, name: "Overgrown Tomb" },
+      { colors: colors.BOROS, name: "Sacred Foundry" },
+      { colors: colors.SIMIC, name: "Breeding Pool" }
+    ],
+    storage: [],
+    creature: [],
+    tri: [],
+    tango: []
+  }
+
+  const landTypes = Object.keys(lands);
+
+  class Suggester extends Component {
+    state = { selectedColors: {}, selectedTypes: {} }
+    onColorChange(event, color) {
+      this.setState(({ selectedColors }) => ({
+        selectedColors: { ...selectedColors, [color]: event.target.checked },
+      }))
+    }
+    onTypeChange(event, type) {
+      this.setState(({ selectedTypes }) => ({
+        selectedTypes: { ...selectedTypes, [type]: event.target.checked },
+      }))
+    }
+    render(props, { selectedColors, selectedTypes }) {
+      return h(
+        Fragment,
+        null,
+        h(
+          'div',
+          null,
+          'colors:',
+          'wubgr'
+            .split('')
+            .map((color) =>
+              h(
+                'label',
+                null,
+                h('input', {
+                  type: 'checkbox',
+                  checked: selectedColors[color],
+                  onChange: (event) => this.onColorChange(event, color),
+                }),
+                color
+              )
+            )
+        ),
+        h(
+          'div',
+          null,
+          'landtypes:',
+          landTypes.map((type) =>
+            h(
+              'label',
+              null,
+              h('input', {
+                type: 'checkbox',
+                checked: selectedTypes[type],
+                onChange: (event) => this.onTypeChange(event, type),
+              }),
+              type
+            )
+          )
+        ),
+        h(
+          'ul',
+          { style: { listStyle: 'none' } },
+          landTypes
+            .filter((type) => selectedTypes[type])
+            .map((type) =>
+              lands[type]
+                .filter((land) =>
+                  Array.prototype.every.call(land.colors, (color) => selectedColors[color])
+                )
+                .map((land) => h('li', { key: land.name }, '1 ', land.name))
+            )
+        )
+      )
+    }
+  }
+
+
+  render(h(Suggester, null, null), document.body)
+</script>
+<noscript>You need to enable JavaScript to run this app.</noscript>
